@@ -1,0 +1,47 @@
+[
+  {
+    "email": "parth@gmail.com",
+    "firstName": "Parth",
+    "lastName": "Nandani",
+    "password": "$2b$10$SMBN.umjiZvRe2zauNFLw.Sb9QeYM5TRlMt1Hp39xr2HR7Ykg7J86",
+    "image": "",
+    "profileSetUp": true,
+    "color": 1
+  },
+  {
+    "email": "tarun@gmail.com",
+    "firstName": "Tarun",
+    "lastName": "Vaghani",
+    "password": "$2b$10$SMBN.umjiZvRe2zauNFLw.Sb9QeYM5TRlMt1Hp39xr2HR7Ykg7J86",
+    "image": "",
+    "profileSetUp": true,
+    "color": 0
+  },
+  {
+    "email": "harsh@gmail.com",
+    "firstName": "Harsh",
+    "lastName": "Akbari",
+    "password": "$2b$10$SMBN.umjiZvRe2zauNFLw.Sb9QeYM5TRlMt1Hp39xr2HR7Ykg7J86",
+    "image": "",
+    "profileSetUp": true,
+    "color": 3
+  },
+  {
+    "email": "prince@gmail.com",
+    "firstName": "Prince",
+    "lastName": "Gangaani",
+    "password": "$2b$10$SMBN.umjiZvRe2zauNFLw.Sb9QeYM5TRlMt1Hp39xr2HR7Ykg7J86",
+    "image": "",
+    "profileSetUp": true,
+    "color": 2
+  },
+  {
+    "email": "jenil@gmail.com",
+    "firstName": "Jenil",
+    "lastName": "Gangaani",
+    "password": "$2b$10$SMBN.umjiZvRe2zauNFLw.Sb9QeYM5TRlMt1Hp39xr2HR7Ykg7J86",
+    "image": "",
+    "profileSetUp": true,
+    "color": 0
+  }
+]
