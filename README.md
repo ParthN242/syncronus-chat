@@ -4,7 +4,7 @@ A real-time chat application enabling seamless communication between users. Buil
 
 ## 🌐 Live Demo
 
-👉 [syncronus-chat-rosy.vercel.app]([https://syncronus-chat-rosy.vercel.app](https://syncronus-chat-client.vercel.app/))
+👉 [syncronus-chat-client.vercel.app](https://syncronus-chat-client.vercel.app/)
 
 ---
 
