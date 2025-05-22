@@ -13,7 +13,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const databaseUrl = process.env.DATABASE_URL_2;
+const databaseUrl = process.env.DATABASE_URL;
 
 const NODE_ENV = process.env.NODE_ENV;
 const isProduction = NODE_ENV === "PRODUCTION";
@@ -39,6 +39,10 @@ app.use("/api/auth", authRoute);
 app.use("/api/contact", contactRoute);
 app.use("/api/message", messageRoute);
 app.use("/api/channel", channelRoute);
+
+app.use("*", (req, res) => {
+  res.json("Bad request");
+});
 
 const server = app.listen(PORT, () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
