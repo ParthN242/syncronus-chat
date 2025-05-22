@@ -23,7 +23,7 @@ const AuthPage = () => {
       const { data } = await axios.post(LOGIN_ROUTE, { email, password });
       setUserInfo(data);
       navigate("/");
-      toast.success("Login Successfull");
+      toast.success("Login Successful");
     } catch (error) {
       console.log("error: ", error);
       toast.error(error?.response?.data?.message || error.message);
@@ -38,7 +38,7 @@ const AuthPage = () => {
       toast.success("Sign Up Success");
     } catch (error) {
       console.log("error: ", error);
-      toast.error(error?.response?.data?.message || data.message);
+      toast.error(error?.response?.data?.message || error.message);
     }
   };
   return (

@@ -13,11 +13,14 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL_2;
+
+const NODE_ENV = process.env.NODE_ENV;
+const isProduction = NODE_ENV === "PRODUCTION";
 
 app.use(
   cors({
-    origin: [process.env.ORIGIN],
+    origin: isProduction ? "https://syncronus-chat-client.vercel.app" : true,
     method: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
