@@ -20,15 +20,10 @@ const isProduction = NODE_ENV === "PRODUCTION";
 
 app.use(
   cors({
-<<<<<<< HEAD
     origin: isProduction ? "https://syncronus-chat-client.vercel.app" : true,
     method: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-=======
-     origin: true,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     preflightContinue: true,
     optionsSuccessStatus: 204,
->>>>>>> c95a0f7285c2f677d67006f124f344b55db31a3b
     credentials: true,
   })
 );
