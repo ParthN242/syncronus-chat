@@ -17,11 +17,12 @@ const databaseUrl = process.env.DATABASE_URL_2;
 
 const NODE_ENV = process.env.NODE_ENV;
 const isProduction = NODE_ENV === "PRODUCTION";
+console.log("isProduction: ", isProduction);
 
 app.use(
   cors({
     origin: isProduction ? "https://syncronus-chat-client.vercel.app" : true,
-    method: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     preflightContinue: true,
     optionsSuccessStatus: 204,
     credentials: true,
