@@ -47,8 +47,6 @@ const ContactContainer = () => {
     if (!socket) return;
 
     const handleContactList = (message) => {
-      console.log("update contact list");
-
       const { contactList, setContactList } = useAppStore.getState();
       const updatedContacts = [...contactList];
 

@@ -8,6 +8,7 @@ import contactRoute from "./routes/contact.route.js";
 import messageRoute from "./routes/message.route.js";
 import channelRoute from "./routes/channel.route.js";
 import { setupSocket } from "./socket.js";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 
@@ -17,11 +18,10 @@ const databaseUrl = process.env.DATABASE_URL;
 
 const NODE_ENV = process.env.NODE_ENV;
 const isProduction = NODE_ENV === "PRODUCTION";
-console.log("isProduction: ", isProduction);
 
 app.use(
   cors({
-    origin: isProduction ? "https://syncronus-chat-client.vercel.app" : true,
+    origin: isProduction ? ["https://syncronus-chat-client.vercel.app"] : true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     preflightContinue: true,
     optionsSuccessStatus: 204,
@@ -29,8 +29,14 @@ app.use(
   })
 );
 
-app.use("/uploads/profiles", express.static("uploads/profiles"));
-app.use("/uploads/files", express.static("uploads/files"));
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// app.use("/uploads/profiles", express.static("uploads/profiles"));
+// app.use("/uploads/files", express.static("uploads/files"));
 
 app.use(express.json());
 app.use(cookieParser());

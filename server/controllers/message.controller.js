@@ -1,5 +1,8 @@
 import Message from "../models/message.model.js";
 import { mkdirSync, renameSync } from "fs";
+import { Readable } from "stream";
+import { v4 as uuid } from "uuid";
+import { v2 as cloudinary } from "cloudinary";
 
 export const sendMessage = async (req, res) => {
   const { content, recipient } = req.body;
@@ -54,24 +57,31 @@ export const getContactMessages = async (req, res) => {
 };
 
 export const uploadFile = async (req, res) => {
-  const file = req.file;
-
-  if (!file) return res.status(400).send("File is required");
-
   try {
-    const date = Date.now();
-    const fileDir = `uploads/files/${date}`;
-    const fileName = `${fileDir}/${file.originalname}`;
+    const file = req.file;
 
-    mkdirSync(fileDir, { recursive: true });
+    if (!file) return res.status(400).send("File is required");
 
-    renameSync(file.path, fileName);
+    const base64String = `data:${file.mimetype};base64,${file.buffer.toString(
+      "base64"
+    )}`;
+
+    const uniquePublicId = `${file.originalname
+      .split(".")
+      .slice(0, -1)
+      .join(".")}_${uuid()}`;
+
+    const result = await cloudinary.uploader.upload(base64String, {
+      resource_type: "auto", // this is key
+      folder: "syncronus-chat/uploaded-files",
+      public_id: uniquePublicId, // optional unique ID
+    });
 
     const createMessage = await Message.create({
       content: "",
       messageType: "file",
       sender: req.userId,
-      fileUrl: fileName,
+      fileUrl: result.secure_url,
       recipient: req.body.recipient,
     });
 
@@ -79,7 +89,7 @@ export const uploadFile = async (req, res) => {
       .populate("sender")
       .populate("recipient");
 
-    return res.status(201).json({ filePath: fileName, message });
+    return res.status(201).json({ filePath: result.secure_url, message });
   } catch (error) {
     console.log("error: ", error);
     return res.status(400).json({ message: "Internal server error" });

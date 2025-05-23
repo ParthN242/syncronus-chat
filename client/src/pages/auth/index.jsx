@@ -44,7 +44,7 @@ const AuthPage = () => {
   return (
     <div className="h-[100vh] w-[100vw] flex items-center justify-center ">
       {/* Auth Box */}
-      <div className="h-[80vh] w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl bg-white shadow-xl grid xl:grid-cols-2">
+      <div className="w-[80vw] md:w-[90vw] lg:w-[70vw] xl:w-[60vw] rounded-3xl bg-white shadow-xl grid xl:grid-cols-2">
         {/* Login & Sign Up Box */}
         <div className="w-full p-5 flex items-center justify-center gap-10 flex-col">
           {/* Text */}

@@ -99,7 +99,7 @@ const Profile = () => {
       setSelectedColor(userInfo.color);
     }
     if (userInfo.image) {
-      setImage(`${HOST}/${userInfo.image}`);
+      setImage(userInfo.image);
     }
   }, [userInfo]);
 
@@ -134,7 +134,7 @@ const Profile = () => {
             {image ? (
               <Avatar className="w-48 h-48">
                 <AvatarImage
-                  className=" w-48 h-48 object-cove bg-black"
+                  className=" w-48 h-48 object-cover bg-black"
                   src={image}
                   alt="profile"
                 />

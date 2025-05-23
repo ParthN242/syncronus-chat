@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { renameSync, unlink, unlinkSync } from "fs";
 import jwt from "jsonwebtoken";
+import uploadImage from "../utils/uploadImage.js";
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -156,15 +157,14 @@ export const updateProfile = async (req, res, next) => {
 // Upload Profile Image
 export const uploadProfileImage = async (req, res, next) => {
   try {
-    if (!req.file) {
+    const image = req.file;
+    if (!image) {
       return res.status(400).send("File is Required");
     }
-    const date = Date.now();
-    let fileName = "uploads/profiles/" + date + req.file.originalname;
-    renameSync(req.file.path, fileName);
+    const result = await uploadImage(image);
     const updatedUser = await User.findByIdAndUpdate(
       req.userId,
-      { image: fileName },
+      { image: result.url },
       { new: true, runValidators: true }
     );
     return res.status(200).json({

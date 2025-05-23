@@ -35,18 +35,52 @@ const MessageContainer = () => {
     return imageRegex.test(filePath);
   };
 
+  const getCleanFileName = (url) => {
+    // get last part of URL (filename)
+    const encodedName = url.split("/").pop().split("?")[0];
+
+    // decode URI components (%20 to spaces, etc)
+    const decodedName = decodeURIComponent(encodedName);
+
+    // split by underscore to separate base name and uuid part
+    const parts = decodedName.split("_");
+
+    const namePart = parts[0]; // first part (e.g. "Javascript Quick Study Guide (2)")
+
+    // combine rest of parts to get extension part (like "1298d145-bde7-42ad-9fc1-462eea7b2833.pdf")
+    const extensionPart = parts.length > 1 ? parts.slice(1).join("_") : "";
+
+    // get extension if available
+    const extension = extensionPart.includes(".")
+      ? extensionPart.substring(extensionPart.lastIndexOf(".") + 1)
+      : "";
+
+    // build final filename with extension
+    return extension ? `${namePart}.${extension}` : namePart;
+  };
+
   const downloadFile = async (url) => {
-    const response = await axios.get(`${HOST}/${url}`, {
-      responseType: "blob",
-    });
-    const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = urlBlob;
-    link.setAttribute("download", url.split("/").pop());
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(urlBlob);
+    console.log("url: ", url);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Network response not ok");
+
+      const blob = await response.blob();
+      const urlBlob = window.URL.createObjectURL(blob);
+
+      const fileName = getCleanFileName(url);
+
+      const link = document.createElement("a");
+      link.href = urlBlob;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(urlBlob);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
   };
 
   useEffect(() => {
@@ -158,7 +192,7 @@ const MessageContainer = () => {
                   }}
                 >
                   <img
-                    src={`${HOST}/${message.fileUrl}`}
+                    src={message.fileUrl}
                     className="object-cover h-full"
                     alt={message.fileUrl}
                     width={300}
@@ -178,7 +212,9 @@ const MessageContainer = () => {
                       <MdFolderZip className="max-md:text-lg" />
                     </span>
                     <span className="max-md:line-clamp-1">
-                      {message.fileUrl.split("/").pop()}
+                      {decodeURIComponent(
+                        message.fileUrl?.split("/").pop().split("_")[0]
+                      )}
                     </span>
                     <span
                       className="p-3 text-2xl max-md:text-lg transition-all duration-300 rounded-full cursor-pointer bg-black/20 hover:bg-black/50"
@@ -232,10 +268,7 @@ const MessageContainer = () => {
       {showImage && (
         <div className="fixed z-[1000] top-0 left-0 h-[100vh] w-[100vw] flex items-center justify-center backdrop-blur-lg flex-col">
           <div>
-            <img
-              src={`${HOST}/${imageUrl}`}
-              className="h-[80vh] w-full bg-cover"
-            />
+            <img src={imageUrl} className="h-[80vh] w-full bg-cover" />
           </div>
           <div className="fixed top-0 flex gap-5 mt-5">
             <button
@@ -261,123 +294,3 @@ const MessageContainer = () => {
 };
 
 export default MessageContainer;
-
-{
-  /* {selectedChatType === "contact" ? (
-                message.messageType === "text" ? (
-                  <>
-                    <div
-                      className={`p-4 w-fit inline-block max-w-[50%] border rounded-lg ${
-                        userInfo._id === message.sender._id
-                          ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
-                          : "bg-[#2a2b33]/5 text-white/80 border-[#fff]/20"
-                      }`}
-                    >
-                      {message.content}
-                    </div>
-                  </>
-                ) : checkImage(message.fileUrl) ? (
-                  <div
-                    className={` p-4 w-fit inline-block border rounded my-1 max-w-[50%] break-words ${
-                      userInfo._id === message.sender._id
-                        ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
-                        : "bg-[#2a2b33]/5 text-white/80 border-[#fff]/20"
-                    }`}
-                    onClick={() => {
-                      setShowImage(true);
-                      setImageUrl(message.fileUrl);
-                    }}
-                  >
-                    <img
-                      src={`${HOST}/${message.fileUrl}`}
-                      className="object-cover h-full"
-                      alt={message.fileUrl}
-                      width={300}
-                      height={300}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className={` p-4 w-fit inline-block border rounded my-1 max-w-[80%] break-words ${
-                      userInfo._id === message.sender._id
-                        ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
-                        : "bg-[#2a2b33]/5 text-white/80 border-[#fff]/20"
-                    }`}
-                  >
-                    <div className="flex items-center justify-center gap-5 max-md:gap-2">
-                      <span className="p-3 text-3xl max-md:text-sm rounded-full bg-black/20 text-white/80 ">
-                        <MdFolderZip className="max-md:text-lg" />
-                      </span>
-                      <span className="max-md:line-clamp-1">
-                        {message.fileUrl.split("/").pop()}
-                      </span>
-                      <span
-                        className="p-3 text-2xl max-md:text-lg transition-all duration-300 rounded-full cursor-pointer bg-black/20 hover:bg-black/50"
-                        onClick={() => downloadFile(message.fileUrl)}
-                      >
-                        <IoMdArrowRoundDown className="" />
-                      </span>
-                    </div>
-                  </div>
-                )
-              ) : (
-                <>
-                  {message.messageType === "text" ? (
-                    <>
-                      <div
-                        className={`p-4 w-fit inline-block max-w-[50%] border rounded-lg ${
-                          userInfo._id === message.sender._id
-                            ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
-                            : "bg-[#2a2b33]/5 text-white/80 border-[#fff]/20"
-                        }`}
-                      >
-                        {message.content}
-                      </div>
-                    </>
-                  ) : checkImage(message.fileUrl) ? (
-                    <div
-                      className={` p-4 w-fit inline-block rounded border max-w-[50%] break-words ${
-                        userInfo._id === message.sender._id
-                          ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
-                          : "bg-[#2a2b33]/5 text-white/80 border-[#fff]/20"
-                      }`}
-                      onClick={() => {
-                        setShowImage(true);
-                        setImageUrl(message.fileUrl);
-                      }}
-                    >
-                      <img
-                        src={`${HOST}/${message.fileUrl}`}
-                        className="object-cover h-full"
-                        alt={message.fileUrl}
-                        width={300}
-                        height={300}
-                      />
-                    </div>
-                  ) : (
-                    <div
-                      className={` p-4 w-fit inline-block rounded border max-w-[80%] break-words ${
-                        userInfo._id === message.sender._id
-                          ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
-                          : "bg-[#2a2b33]/5 text-white/80 border-[#fff]/20"
-                      }`}
-                    >
-                      <div className="flex items-center justify-center gap-5 max-md:gap-2">
-                        <span className="p-3 text-3xl max-md:text-sm rounded-full bg-black/20 text-white/80 ">
-                          <MdFolderZip className="max-md:text-lg" />
-                        </span>
-                        <span className="max-md:line-clamp-1">
-                          {message.fileUrl.split("/").pop()}
-                        </span>
-                        <span
-                          className="p-3 text-2xl max-md:text-lg transition-all duration-300 rounded-full cursor-pointer bg-black/20 hover:bg-black/50"
-                          onClick={() => downloadFile(message.fileUrl)}
-                        >
-                          <IoMdArrowRoundDown className="" />
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )} */
-}

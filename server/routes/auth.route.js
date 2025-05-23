@@ -7,13 +7,17 @@ import {
   signUp,
   updateProfile,
   uploadProfileImage,
-} from "../controllers/auth.controll.js";
+} from "../controllers/auth.controller.js";
 import { verifyUser } from "../middleware/authMiddleware.js";
 import multer from "multer";
 
 const route = express.Router();
 
-const upload = multer({ dest: "uploads/profiles/" });
+const upload = multer({
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+});
 
 route
   .post("/signup", signUp)
