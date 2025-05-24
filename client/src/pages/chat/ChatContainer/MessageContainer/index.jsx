@@ -232,7 +232,7 @@ const MessageContainer = () => {
                     {message.sender.image ? (
                       <AvatarImage
                         className=" w-full h-full object-cover bg-black"
-                        src={`${HOST}/${message.sender.image}`}
+                        src={message.sender.image}
                         alt="profile"
                       />
                     ) : (
