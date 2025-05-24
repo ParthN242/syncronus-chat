@@ -9,7 +9,12 @@ import multer from "multer";
 
 const route = express.Router();
 
-const upload = multer({ dest: "uploads/files" });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+});
 
 route
   .post("/create-channel", verifyUser, createChannel)

@@ -64,6 +64,14 @@ mongoose
     console.log("error", err);
   });
 
+app.use((err, req, res, next) => {
+  console.error("Error:", err.message);
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || "internal server error",
+  });
+});
+
 server.listen(PORT, () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
 });
