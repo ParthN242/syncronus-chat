@@ -9,6 +9,7 @@ import messageRoute from "./routes/message.route.js";
 import channelRoute from "./routes/channel.route.js";
 import { setupSocket } from "./socket.js";
 import { v2 as cloudinary } from "cloudinary";
+import http from "http";
 
 dotenv.config();
 
@@ -19,15 +20,14 @@ const databaseUrl = process.env.DATABASE_URL;
 const NODE_ENV = process.env.NODE_ENV;
 const isProduction = NODE_ENV === "PRODUCTION";
 
-app.use(
-  cors({
-    origin: isProduction ? ["https://syncronus-chat-client.vercel.app"] : true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    preflightContinue: true,
-    optionsSuccessStatus: 204,
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: isProduction ? [process.env.ORIGIN] : true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Authorization", "Content-Type"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -50,11 +50,9 @@ app.use("*", (req, res) => {
   res.json("Bad request");
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Server listening on port http://localhost:${PORT}`);
-});
+const server = http.createServer(app);
 
-setupSocket(server, app);
+setupSocket(server, app, corsOptions);
 
 mongoose
   .connect(databaseUrl)
@@ -65,3 +63,7 @@ mongoose
     console.log("Error connecting to database");
     console.log("error", err);
   });
+
+server.listen(PORT, () => {
+  console.log(`Server listening on port http://localhost:${PORT}`);
+});

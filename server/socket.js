@@ -28,11 +28,11 @@ export const setupSocket = (server, app) => {
     const recipientId = userSocketMap.get(message.recipient._id);
 
     if (recipientId) {
-      console.log("recipientId: ", recipientId);
+      // console.log("recipientId: ", recipientId);
       io.to(recipientId).emit("receive-message", message);
     }
     if (senderId) {
-      console.log("senderId: ", senderId);
+      // console.log("senderId: ", senderId);
       io.to(senderId).emit("receive-message", message);
     }
   };
@@ -52,7 +52,7 @@ export const setupSocket = (server, app) => {
 
     await findChannel.save();
 
-    console.log("channel.members: ", channel.members);
+    // console.log("channel.members: ", channel.members);
     channel.members.forEach((member) => {
       io.to(userSocketMap.get(member)).emit("receive-channel-message", {
         message: findMessage,

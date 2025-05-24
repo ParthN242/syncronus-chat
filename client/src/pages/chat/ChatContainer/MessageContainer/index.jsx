@@ -60,7 +60,6 @@ const MessageContainer = () => {
   };
 
   const downloadFile = async (url) => {
-    console.log("url: ", url);
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error("Network response not ok");
